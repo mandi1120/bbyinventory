@@ -50,7 +50,7 @@ valuedWb.sheets["Sheet1"].range("A1").value = wb.sheets['Admin'].range('A1:G200'
 valuedWb.sheets["Sheet1"].name = 'Admin'
 valuedWb.sheets["Sheet3"].range("A1").value = wb.sheets['List'].range('A1:N1000').value
 valuedWb.sheets["Sheet3"].name = 'List'
-valuedWb.sheets["Sheet4"].range("A1").value = wb.sheets['BBY Inv email'].range('A1:K40000').value
+valuedWb.sheets["Sheet4"].range("A1").value = wb.sheets['BBY Inv email'].range('A1:K80000').value
 valuedWb.sheets["Sheet4"].name = 'BBY Inv email'
 valuedWb.save('C:\\Users\\'+ homedir + '\\Desktop\\BBY_TV_Inv_Temp.xlsx')
 valuedWbFilename = 'C:\\Users\\'+ homedir + '\\Desktop\\BBY_TV_Inv_Temp.xlsx'
@@ -69,7 +69,7 @@ valuedWb.close()
 invxlfile = pd.ExcelFile(valuedWbFilename)
 df = pd.read_excel(invxlfile, 'BBY Inv email')
 df = df[['Region','Market','StoreId','Warehouse?','Sku','Inventory']]
-df = df [ df['Sku'].str.contains("KU|KS|LS|MU|NU|WMN|QN") ]
+df = df [ df['Sku'].str.contains("LS|MU|NU|WMN|QN") ]
 
 
 #create data frame from store list
@@ -111,6 +111,7 @@ merged['Size'] = sizes
 fullSkuList = merged [[ 'Sku', 'Model', 'Size', 'National DC/DDC Inventory' ]]
 fullSkuList = fullSkuList.drop_duplicates('Sku')
 fullSkuList = fullSkuList.values.tolist()
+
 
 
 #####  StoreIdMerged Field   #####
@@ -333,7 +334,7 @@ for eachMarket in markets:
 				storeIdColumn = store.column
 				storeIdNumber = tempWbSh.range(store).value					
 				tempWbSh.range(1, storeIdColumn).value = storeIdNumber[4:len(storeIdNumber)]
-				storeList.append(tempWbSh.range((1, storeIdColumn),(101,storeIdColumn)).value)
+				storeList.append(tempWbSh.range((1, storeIdColumn),(120,storeIdColumn)).value)
 		
 		#sort columns by by tier (ascending), then storeId (ascending), then Units/DC's label (descending)
 		storeList = sorted(storeList, key=itemgetter(1,0,-5))
@@ -341,7 +342,7 @@ for eachMarket in markets:
 		#write the sorted store columns (G-AP) to the file
 		tempWbSh.range("G1:AP101").api.EntireColumn.Clear()
 		for n in range(0,len(storeList)):
-			r = tempWbSh.range((1, n+7), (101, n+7))
+			r = tempWbSh.range((1, n+7), (120, n+7))
 			r.options(transpose = True).value = storeList[n]
 
 					
@@ -354,8 +355,8 @@ for eachMarket in markets:
 		new_wb.sheets['Sheet1'].delete()
 		
 		#copy data from temp file to new workbook, then set freeze panes
-		marketValuesTemp = tempWbSh.range('A3:AP102').value 
-		new_wb.sheets['TV Inventory'].range('A1:AP100').value = marketValuesTemp
+		marketValuesTemp = tempWbSh.range('A3:AP130').value 
+		new_wb.sheets['TV Inventory'].range('A1:AP127').value = marketValuesTemp
 		new_wb.FreezePanes = False
 		new_wb.sheets['TV Inventory'].range("G5").select()
 		new_wb.FreezePanes = True
